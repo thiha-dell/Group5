@@ -2,7 +2,7 @@
 import sqlite3
 import pygame
 import sys
-from level_menu import level_menu
+from level_menu import level_mmenu
 
 # Initialize Pygame
 pygame.init()
@@ -21,6 +21,111 @@ FONT_MENU = pygame.font.Font(None, 40)
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption('Pac-Man')
 
+def level_menu():
+    BLACK = (0, 0, 0)
+    WHITE = (255, 255, 255)
+    green = (0, 255, 0)
+    red = (255, 0, 0)
+    Grey = (39, 41, 46)
+
+    # Set the width and height of the screen
+    size = (800, 600)
+    screen = pygame.display.set_mode(size)
+
+    pygame.display.set_caption("Game Level Menu")
+
+    # Define the font to be used
+    font = pygame.font.SysFont(None, 36)
+
+
+    # Set up the levels
+    levels = [
+        {"name": "Level 1", "locked": False},
+        {"name": "Level 2", "locked": False},
+        {"name": "Level 3", "locked": True},
+    ]
+
+    # Define the position of the first level button
+    button_x = 200
+    button_y = 200
+
+    # Define the spacing between buttons
+    button_spacing = 150
+
+    # Loop until the user clicks the close button
+    done = False
+
+    # Main game loop
+    while not done:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                done = True
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                # Check if the user clicked on a level button
+                mouse_pos = pygame.mouse.get_pos()
+                for i, level in enumerate(levels):
+                    button_rect = pygame.Rect(button_x + i * button_spacing, button_y, 150, 100)
+                    if button_rect.collidepoint(mouse_pos):
+                        if not level["locked"]:
+                            # TODO: Start the selected level
+                            # button entering level
+                            print("Starting", level["name"])
+
+                        elif level["locked"]:
+                            # TODO: Display a message that the level is locked
+                            print( level["name"], "is locked")
+
+                back_button_rect = pygame.Rect(50, 500, 100, 50)
+                if back_button_rect.collidepoint(mouse_pos):
+                    show_user()
+                    print("going back to previous step")
+
+
+
+
+        # Fill the background with Grey
+        screen.fill(Grey)
+
+        # Draw the level buttons
+        for i, level in enumerate(levels):
+            # Determine the position of the button
+            button_rect = pygame.Rect(button_x + i * button_spacing, button_y, 100, 100)
+
+            # Determine the button color based on whether it is locked or not
+            if level["locked"]:
+                button_color = BLACK
+            else:
+                button_color = (50, 50, 200)
+
+            # Draw the button rectangle
+            pygame.draw.rect(screen, button_color, button_rect)
+
+            # Draw the button label
+            button_label = font.render(level["name"], True, WHITE)
+            screen.blit(button_label, (button_x + i * button_spacing+ 10, button_y  + 10))
+
+            # If the button is locked, draw a lock symbol over it
+            if level["locked"]:
+                lock_image = pygame.image.load("assets/level_menu/images.png")
+                resized_img = pygame.transform.scale(lock_image, (50, 50))
+                screen.blit(resized_img, (button_x + i * button_spacing + 25, button_y + 40))
+
+        title_surface = font.render("Level Menu", True, BLACK)
+        # Calculate the position to center the title
+        title_x = (800 - title_surface.get_width()) // 2
+        title_y = 100  # adjust as needed
+
+        # Draw the title onto the screen
+
+        screen.blit(title_surface, (title_x, title_y))
+
+        back_button_rect = pygame.Rect(50, 500, 100, 50)
+        back_button_text = font.render("Back", True, WHITE)
+        pygame.draw.rect(screen, BLACK, back_button_rect, border_radius=20)
+        screen.blit(back_button_text, (70, 510))
+
+        # Update the screen
+        pygame.display.flip()
 
 # Show scoreboard function
 def show_scoreboard():
@@ -215,8 +320,7 @@ def show_user():
                         c.execute("INSERT INTO scores (username,score) VALUES (?,?)", (user_text, 0))
                         conn.commit()
                         print("Database added successfully.")
-                        level_menu()
-
+                        level_mmenu()
 
                     else:
                         # Show an error message box
@@ -229,6 +333,7 @@ def show_user():
                     run = False
                     print("Cancel button clicked")
                     user_text = ''
+
 
             if event.type == pygame.KEYDOWN:
                 if active:

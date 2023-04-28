@@ -1,5 +1,4 @@
 import pygame
-import pacman
 pygame.init()
 
 """def button(msg, x, y, w, h, inactive_color, active_color, active_scale, is_locked):
@@ -28,7 +27,7 @@ pygame.init()
         screen.blit(resized_img, (button_x + i * button_spacing + 25, button_y + 40))"""
 
 # Define some colors
-def level_menu():
+def level_mmenu():
     BLACK = (0, 0, 0)
     WHITE = (255, 255, 255)
     green = (0, 255, 0)
@@ -53,7 +52,7 @@ def level_menu():
     ]
 
     # Define the position of the first level button
-    button_x = 150
+    button_x = 200
     button_y = 200
 
     # Define the spacing between buttons
@@ -77,11 +76,20 @@ def level_menu():
                             # TODO: Start the selected level
                             # button entering level
                             print("Starting", level["name"])
-                        else:
+
+                        elif level["locked"]:
                             # TODO: Display a message that the level is locked
                             print( level["name"], "is locked")
 
-        # Fill the background with white
+                back_button_rect = pygame.Rect(50, 500, 100, 50)
+                if back_button_rect.collidepoint(mouse_pos):
+                    done = True
+                    print("going back to previous step")
+
+
+
+
+        # Fill the background with Grey
         screen.fill(Grey)
 
         # Draw the level buttons
@@ -104,33 +112,29 @@ def level_menu():
 
             # If the button is locked, draw a lock symbol over it
             if level["locked"]:
-                lock_image = pygame.image.load("level_menu_assets/images.png")
+                lock_image = pygame.image.load("assets/level_menu/images.png")
                 resized_img = pygame.transform.scale(lock_image, (50, 50))
                 screen.blit(resized_img, (button_x + i * button_spacing + 25, button_y + 40))
 
-        title_text = "Level Menu"
-        title_surface = font.render(title_text, True, BLACK)  #
-
+        title_surface = font.render("Level Menu", True, BLACK)
         # Calculate the position to center the title
-        title_x = (700 - title_surface.get_width()) // 2
+        title_x = (800 - title_surface.get_width()) // 2
         title_y = 100  # adjust as needed
-
-        """button("Button 1", 150, 400, 100, 50, green, red, 1.2, True)
-        button("Button 2", 350, 400, 100, 50, green, red, 1.2, True)"""
 
         # Draw the title onto the screen
 
         screen.blit(title_surface, (title_x, title_y))
 
-        button_text = font.render("Back", True, (255, 255, 255))
-        button = pygame.Surface((150, 100))
-        button.fill((0, 128, 255))
-        button.blit(button_text,
-                    ((150 - button_text.get_width()) // 2, (100 - button_text.get_height()) // 2))
+        back_button_rect = pygame.Rect(50, 500, 100, 50)
+        back_button_text = font.render("Back", True, WHITE)
+        pygame.draw.rect(screen, BLACK, back_button_rect, border_radius=20)
+        screen.blit(back_button_text, (70, 510))
 
         # Update the screen
         pygame.display.flip()
 
-# Quit the game
-pygame.quit()
 
+
+# Quit the game
+#level_mmenu()
+pygame.quit()
